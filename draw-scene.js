@@ -2,8 +2,9 @@ const radianFromDegrees = degrees => (degrees * Math.PI) / 180;
 
 const rotate = (modelViewMatrix, theta, ax) => {
   const axes = {
-    x: [0, 1, 0],
-    y: [1, 0, 0]
+    x: [1, 0, 0],
+    y: [0, 1, 0],
+    z: [0, 0, 1]
   };
 
   mat4.rotate(
@@ -53,6 +54,8 @@ const createViewMatrix = (pos, theta, phi) => {
 
   const modelViewMatrix = mat4.create();
   translate(modelViewMatrix, [x, y, z]);
+  rotate(modelViewMatrix, radianFromDegrees(theta), "y");
+  rotate(modelViewMatrix, -radianFromDegrees(phi), "x");
 
   return modelViewMatrix;
 }
