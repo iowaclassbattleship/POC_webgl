@@ -16,11 +16,10 @@ const rotate = (modelViewMatrix, theta, ax) => {
 }
 
 const translate = (modelViewMatrix, pos) => {
-  const [x, y, z] = pos;
   mat4.translate(
     modelViewMatrix,
     modelViewMatrix,
-    [x, y, z]
+    pos
   );
 }
 
@@ -36,7 +35,7 @@ const createProjectionMatrix = (width, height) => {
   const projectionMatrix = mat4.create();
   mat4.perspective(
     projectionMatrix,
-    radianFromDegrees(75),
+    radianFromDegrees(45),
     width / height,
     1e-4,
     1e4
@@ -50,12 +49,9 @@ const createViewMatrix = (pos, theta, phi) => {
 
   x = z * Math.sin(radianFromDegrees(theta));
   y = z * Math.sin(radianFromDegrees(phi))
-  z = z;
 
   const modelViewMatrix = mat4.create();
   translate(modelViewMatrix, [x, y, z]);
-  rotate(modelViewMatrix, radianFromDegrees(theta), "y");
-  rotate(modelViewMatrix, -radianFromDegrees(phi), "x");
 
   return modelViewMatrix;
 }

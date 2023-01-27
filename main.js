@@ -21,7 +21,7 @@ const main = () => {
 
     const velocity = .1;
 
-    let positionVector = [0, 0, 0];
+    let positionVector = [0, 0, -10];
     let zDirection = 0;
     let theta = 0;
     let phi = 0;
