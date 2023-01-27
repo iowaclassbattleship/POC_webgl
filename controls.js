@@ -21,26 +21,23 @@ const getNoPaddingNoBorderCanvasRelativeMousePosition = (event, target) => {
 const keys = {
     up: "KeyW",
     down: "KeyS",
-    left: "KeyA",
-    right: "KeyD"
 };
 
 const setupMouse = (gl, update) => {
-    let rotX = 0;
-    let rotY = 0;
+    let x = 0;
+    let y = 0;
 
-    document.addEventListener("mousemove", event => {
+    gl.canvas.addEventListener("mousemove", event => {
         const pos = getNoPaddingNoBorderCanvasRelativeMousePosition(event, gl.canvas);
 
-        rotX = pos.x / gl.canvas.width * 2 - 1;
-        rotY = pos.y / gl.canvas.height * -2 + 1;
+        x = pos.x / gl.canvas.width * 2 - 1;
+        y = pos.y / gl.canvas.height * -2 + 1;
 
-        update(rotX, rotY, 0);
+        update(90 * x, 90 * y);
     });
 }
 
-const setupKeyboard = (update) => {
-    let xDirection = 0;
+const setupKeyboard = update => {
     let zDirection = 0;
 
     document.addEventListener("keydown", e => {
@@ -51,15 +48,9 @@ const setupKeyboard = (update) => {
             case keys.down:
                 zDirection = -1;
                 break;
-            case keys.left:
-                xDirection = 1;
-                break;
-            case keys.right:
-                xDirection = -1;
-                break;
         }
 
-        update(xDirection, 0, zDirection);
+        update(zDirection);
     });
 
     document.addEventListener("keyup", e => {
@@ -68,13 +59,9 @@ const setupKeyboard = (update) => {
             case keys.down:
                 zDirection = 0;
                 break;
-            case keys.left:
-            case keys.right:
-                xDirection = 0;
-                break;
         }
 
-        update(xDirection, 0, zDirection);
+        update(zDirection);
     });
 }
 

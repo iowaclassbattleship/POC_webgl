@@ -44,25 +44,24 @@ const createProjectionMatrix = (width, height) => {
   return projectionMatrix;
 }
 
-const createViewMatrix = (pos, rot) => {
+const createViewMatrix = (pos, theta, phi) => {
   let [x, y, z] = pos;
-  let [rotX, rotY, rotZ] = rot;
+
+  x = z * Math.sin(radianFromDegrees(theta));
+  y = z * Math.sin(radianFromDegrees(phi))
+  z = z;
 
   const modelViewMatrix = mat4.create();
-
-  const newPos = [x - rotX * 1, y - rotY * 1, z];
-  console.log(newPos);
-
-  translate(modelViewMatrix, newPos);
+  translate(modelViewMatrix, [x, y, z]);
 
   return modelViewMatrix;
 }
 
-const drawScene = (gl, programInfo, buffers, pos, rot) => {
+const drawScene = (gl, programInfo, buffers, pos, theta, phi) => {
   clearScene(gl);
 
   const projectionMatrix = createProjectionMatrix(gl.canvas.width, gl.canvas.height);
-  const modelViewMatrix = createViewMatrix(pos, rot);
+  const modelViewMatrix = createViewMatrix(pos, theta, phi);
 
   setPositionAttribute(gl, buffers.position, programInfo);
   setColorAttribute(gl, buffers.color, programInfo);
@@ -70,7 +69,6 @@ const drawScene = (gl, programInfo, buffers, pos, rot) => {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
   gl.useProgram(programInfo.program);
 
-  // Set the shader uniforms
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.projectionMatrix,
     false,

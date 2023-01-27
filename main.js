@@ -21,24 +21,27 @@ const main = () => {
 
     const velocity = .1;
 
-    let positionVector = [0, 0, -5];
-    let rotationVector = [0, 0, 0];
-    let directionVector = [0, 0, 0];
+    let positionVector = [0, 0, 0];
+    let zDirection = 0;
+    let theta = 0;
+    let phi = 0;
 
-    setupMouse(gl, (x, y, z) => rotationVector = [x, y, z]);
-    setupKeyboard((x, y, z) => directionVector = [x, y, z]);
+    setupMouse(gl, (_theta, _phi) => {
+        theta = _theta;
+        phi = _phi;
+    });
+    setupKeyboard((_zDirection) => zDirection = _zDirection);
 
     let then = 0;
     let deltaTime = 0;
     const render = (now) => {
-        if (directionVector[0] != 0) positionVector[0] += velocity * directionVector[0];
-        if (directionVector[2] != 0) positionVector[2] += velocity * directionVector[2];
+        if (zDirection != 0) positionVector[2] += velocity * zDirection;
 
         now *= 0.001;
         deltaTime = now - then;
         then = now;
 
-        drawScene(gl, getProgramInfo(gl), buffers, positionVector, rotationVector);
+        drawScene(gl, getProgramInfo(gl), buffers, positionVector, theta, phi);
 
         requestAnimationFrame(render);
     }
