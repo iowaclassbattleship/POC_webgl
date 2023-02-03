@@ -39,7 +39,7 @@ const initPositionBuffer = gl => {
     const buffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, cube(.8), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, cube(1), gl.STATIC_DRAW);
 
     return buffer;
 }
@@ -71,4 +71,6 @@ const initIndexBuffer = gl => {
     return buffer;
 }
 
-export { initBuffers };
+export const buffer = {
+    initBuffers
+};

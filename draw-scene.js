@@ -15,10 +15,10 @@ const rotate = (modelViewMatrix, theta, ax) => {
   );
 }
 
-const translate = (modelViewMatrix, pos) => {
+const translate = (viewMatrix, pos) => {
   mat4.translate(
-    modelViewMatrix,
-    modelViewMatrix,
+    viewMatrix,
+    viewMatrix,
     pos
   );
 }
@@ -31,36 +31,26 @@ const clearScene = gl => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
-const createProjectionMatrix = (width, height) => {
-  const projectionMatrix = mat4.create();
-  mat4.perspective(
-    projectionMatrix,
-    radianFromDegrees(45),
-    width / height,
-    1e-4,
-    1e4
-  );
-
-  return projectionMatrix;
-}
-
-const createViewMatrix = (pos, theta, phi) => {
-  let [x, y, z] = pos;
-
-  x = z * Math.sin(radianFromDegrees(theta));
-  y = z * Math.sin(radianFromDegrees(phi))
-
-  const modelViewMatrix = mat4.create();
-  translate(modelViewMatrix, [x, y, z]);
-
-  return modelViewMatrix;
-}
-
-const drawScene = (gl, programInfo, buffers, pos, theta, phi) => {
+const drawScene = (gl, programInfo, buffers, pos, yaw, pitch) => {
   clearScene(gl);
 
-  const projectionMatrix = createProjectionMatrix(gl.canvas.width, gl.canvas.height);
-  const modelViewMatrix = createViewMatrix(pos, theta, phi);
+  let cameraPos = vec3.create();
+  let cameraTarget = vec3.create();
+  let cameraUp = vec3.create();
+
+  vec3.set(cameraPos, 0, 0, 10);
+  vec3.set(cameraTarget, 0, 0, 0);
+  vec3.set(cameraUp, 0, 1, 0);
+
+  const viewMatrix = mat4.create();
+  mat4.lookAt(viewMatrix, cameraPos, cameraTarget, cameraUp);
+
+  const projectionMatrix = mat4.create();
+  mat4.perspective(projectionMatrix, 45, gl.canvas.width / gl.canvas.height, .1, 100);
+
+  console.log(yaw, pitch);
+  mat4.rotateY(viewMatrix, viewMatrix, yaw);
+  mat4.rotateX(viewMatrix, viewMatrix, pitch);
 
   setPositionAttribute(gl, buffers.position, programInfo);
   setColorAttribute(gl, buffers.color, programInfo);
@@ -77,15 +67,13 @@ const drawScene = (gl, programInfo, buffers, pos, theta, phi) => {
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.modelViewMatrix,
     false,
-    modelViewMatrix
+    viewMatrix
   );
 
-  {
-    const vertexCount = 36;
-    const type = gl.UNSIGNED_SHORT;
-    const offset = 0;
-    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
-  }
+  const vertexCount = 36;
+  const type = gl.UNSIGNED_SHORT;
+  const offset = 0;
+  gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
 }
 
 // Tell WebGL how to pull out the positions from the position
@@ -127,6 +115,8 @@ const setColorAttribute = (gl, color, programInfo) => {
     offset
   );
   gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
-}
+};
 
-export { drawScene };
+export const scene = {
+  drawScene
+};

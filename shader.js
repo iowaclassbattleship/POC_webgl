@@ -81,4 +81,6 @@ const getProgramInfo = gl => {
     };
 }
 
-export { getProgramInfo };
+export const shader = {
+    getProgramInfo
+};

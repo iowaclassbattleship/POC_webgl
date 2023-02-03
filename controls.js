@@ -33,7 +33,7 @@ const setupMouse = (gl, update) => {
         x = pos.x / gl.canvas.width * 2 - 1;
         y = pos.y / gl.canvas.height * -2 + 1;
 
-        update(90 * x, 90 * y);
+        update(x, y);
     });
 }
 
@@ -65,4 +65,7 @@ const setupKeyboard = update => {
     });
 }
 
-export { setupMouse, setupKeyboard };
+export const controls = {
+    setupMouse,
+    setupKeyboard
+};
